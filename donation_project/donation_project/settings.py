@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(2bvb*b0(%r-iv@&_1m=u4sn3%j2=cafasm#j+-i$)-b*t*x%2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]  
 
 
 # Application definition
@@ -39,11 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    "corsheaders",
     'accounts',
     'donations', 
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,3 +127,20 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.CustomUser'
+# Django REST Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # default: only authenticated users
+    ),
+}
+
+# CORS (Cross-Origin Resource Sharing)
+CORS_ALLOW_ALL_ORIGINS = True  # during development, allow all. For production, restrict domains.
+CORS_ALLOW_CREDENTIALS = True
+
+# Stripe (payment integration) – replace with your real keys
+STRIPE_SECRET_KEY = "your_stripe_secret_key_here"
+STRIPE_PUBLISHABLE_KEY = "your_stripe_publishable_key_here"
