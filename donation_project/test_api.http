@@ -1,0 +1,135 @@
+@DONOR_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MTEzNjI1LCJpYXQiOjE3NTcxMTMzMjUsImp0aSI6IjBiYzM3OWJlNzQzZTQ1YjJhODU0MDQ4MmMwOTIyMzk2IiwidXNlcl9pZCI6IjIiLCJ1c2VybmFtZSI6ImRvbm9yMSIsInJvbGUiOiJEb25vciJ9.nmTt2Mk5jLbgsRm--E6V9cp4tj7TdtwRcakBzFY9Lks
+@NGO_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MTYwMDg0LCJpYXQiOjE3NTcxNTk3ODQsImp0aSI6ImYxMjMxNTllOTg3YjRlYmQ5YTAzZTRhNzRlZTU1YzEzIiwidXNlcl9pZCI6IjMiLCJ1c2VybmFtZSI6Im5nbzEiLCJyb2xlIjoiTkdPIn0.YrLHiSfhMRIN_GhCTlrznRtua6w1r0PFN6zoCzgR8kg
+@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MTE1MTY4LCJpYXQiOjE3NTcxMTQ4NjgsImp0aSI6IjYwMTg1OGE4N2UwODRjNGY4MDgxOGJmOGQ5ZjUxZGNlIiwidXNlcl9pZCI6IjciLCJ1c2VybmFtZSI6ImFkbWluMSIsInJvbGUiOiJBZG1pbiJ9.vXdNDkIZMk1Yp7yyUiSn8M8InshVB8EIeFuRNnK7vUM
+
+### 1. Register Admin
+POST http://127.0.0.1:8000/api/accounts/register/
+Content-Type: application/json
+
+{
+    "username": "admin2",
+    "email": "admin2@example.com",
+    "password": "StrongPass123!",
+    "password2": "StrongPass123!",
+    "role": "Admin"
+}
+
+### 1. Register Donor
+POST http://127.0.0.1:8000/api/accounts/register/
+Content-Type: application/json
+
+{
+    "username": "donor1",
+    "email": "donor1@example.com",
+    "password": "StrongPass123!",
+    "password2": "StrongPass123!",
+    "role": "Donor"
+}
+
+###
+
+### 2. Register NGO
+POST http://127.0.0.1:8000/api/accounts/register/
+Content-Type: application/json
+
+{
+    "username": "ngo1",
+    "email": "ngo1@example.com",
+    "password": "StrongPass123!",
+    "password2": "StrongPass123!",
+    "role": "NGO"
+}
+
+###
+
+### 3. Login Donor (JWT)
+POST http://127.0.0.1:8000/api/accounts/login/
+Content-Type: application/json
+
+{
+    "username": "donor1",
+    "password": "StrongPass123!"
+}
+
+
+###
+
+### 4. Login NGO (JWT)
+POST http://127.0.0.1:8000/api/accounts/login/
+Content-Type: application/json
+
+{
+    "username": "ngo1",
+    "password": "StrongPass123!"
+}
+
+
+###
+
+### 5. Login Admin
+POST http://127.0.0.1:8000/api/accounts/login/
+Content-Type: application/json
+
+{
+    "username": "admin2",
+    "password": "StrongPass123!"
+}
+
+
+### 6. NGO creates NGO record (pending approval)
+POST http://127.0.0.1:8000/api/donations/ngos/create/
+Content-Type: application/json
+Authorization: Bearer {{NGO_TOKEN}}
+
+{
+    "name": "Helping Hands",
+    "description": "We help communities."
+}
+
+---
+
+### 7. Admin approves NGO
+POST http://127.0.0.1:8000/api/donations/ngos/1/approve/
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+---
+
+### 8. NGO creates a campaign
+POST http://127.0.0.1:8000/api/donations/campaigns/create/
+Content-Type: application/json
+Authorization: Bearer {{NGO_TOKEN}}
+
+{
+    "title": "Clean Water Fund",
+    "description": "Wells and filters",
+    "target_amount": "5000.00"
+}
+
+---
+
+### 9. Public: List campaigns
+GET http://127.0.0.1:8000/api/donations/campaigns/
+
+---
+
+### 10. Donor makes a donation
+POST http://127.0.0.1:8000/api/donations/donations/create/
+Content-Type: application/json
+Authorization: Bearer {{DONOR_TOKEN}}
+
+{
+    "campaign": 1,
+    "amount": "50.00"
+}
+
+---
+
+### 11. NGO dashboard (totals)
+GET http://127.0.0.1:8000/api/donations/ngo/dashboard/
+Authorization: Bearer {{NGO_TOKEN}}
+
+---
+
+### 12. Leaderboard
+GET http://127.0.0.1:8000/api/donations/leaderboard/
+Authorization: Bearer {{DONOR_TOKEN}}
